@@ -3,13 +3,8 @@
   rhsm_repository:
     name: "{{ item }}"
     state: enabled
-  with_items: "{{ rabbitmq_repository_on_satellite }}"
+  loop: "{{ rabbitmq_repository_on_satellite }}"
   when: rabbitmq_repository_on_satellite is defined
-
-- name: install rabbitmq-server dependencies (RedHat)
-  yum: name="{{ item }}" state=present
-  with_items:
-    - libselinux-python
 
 - name: add erlang rpm key
   rpm_key:
@@ -24,26 +19,27 @@
     owner: root
     group: root
     mode: 0644
+  become: yes
   when: ansible_distribution != "RedHat"
 
-- name: install erlang
+- name: Install RabbitMQ dependencies
   yum:
-    name: erlang
-    state: present
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - libselinux-python
+    - erlang
+    - socat
 
 - name: install rabbitmq-server {{ rabbitmq_version }} (RedHat)
   yum:
-    name: "https://dl.bintray.com/rabbitmq/all/rabbitmq-server/{{ rabbitmq_version }}/rabbitmq-server-{{ rabbitmq_version }}-1.el7.noarch.rpm"
+    name: >
+      {% if rabbitmq_repository_on_satellite is not defined %}
+      https://dl.bintray.com/rabbitmq/all/rabbitmq-server/{{ rabbitmq_version }}/rabbitmq-server-{{ rabbitmq_version }}-1.el7.noarch.rpm
+      {% else %}
+      rabbitmq-server-{{ rabbitmq_version }}
+      {% endif %}
     state: present
-  when: rabbitmq_repository_on_satellite is not defined
-
-
-- name: install rabbitmq-server {{ rabbitmq_version }} (RedHat)
-  yum:
-    name: "rabbitmq-server-{{ rabbitmq_version }}"
-    state: present
-  when: rabbitmq_repository_on_satellite is defined
-
 
 - name: enable rabbitmq-server to survive reboot
   service:
