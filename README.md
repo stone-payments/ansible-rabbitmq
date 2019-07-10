@@ -73,14 +73,33 @@ rabbitmq_conf_vm_memory_high_watermark: 0.4
 rabbitmq_service_d_path: /etc/systemd/system/rabbitmq-server.service.d
 rabbitmq_system_number_open_files: 50000
 
+
+# RabbitMQ vhosts
+rabbitmq_vhosts:
+  - anotherVhost
+
 # RabbitMQ users
-rabbitmq_users_remove:
-  - guest
-
 rabbitmq_users:
-  - rabbitmq
+  - user: guest
+    state: absent
 
-rabbitmq_administrator_tag: administrator
+  - user: admin
+    password: adminpass
+    permissions:
+      - vhost: "/"
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+      - vhost: "{{ rabbitmq_vhosts[0] }}"
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+    tags: administrator
+
+  - user: user2
+    password: user2pass
+    write_priv: .*
+    vhost: "{{ rabbitmq_vhosts[0] }}"
 
 # RabbitMQ plugins
 rabbitmq_bin_path: "/usr/lib/rabbitmq/bin"

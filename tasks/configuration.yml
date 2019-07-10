@@ -60,16 +60,22 @@
 - name: ensure rabbitmq app is started
   command: rabbitmqctl start_app
 
-- name: ensure the users are removed
-  rabbitmq_user:
-    user={{ item }}
-    state=absent
-  with_items: "{{ rabbitmq_users_remove }}"
+- name: create Vhost
+  rabbitmq_vhost:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ rabbitmq_vhosts }}"
 
-- name: ensure users exist
+- name: create users
   rabbitmq_user:
-    user={{ item }}
-    password={{ item }}
-    tags={{ rabbitmq_administrator_tag }}
-    state=present
+    user: "{{ item.user }}"
+    password: "{{ item.password | d(omit) }}"
+    permissions: "{{ item.permissions | d(omit) }}"  
+    vhost: "{{ item.vhost | d(omit) }}"
+    configure_priv: "{{ item.configure_priv | d(omit) }}"
+    read_priv: "{{ item.read_priv | d(omit) }}"
+    write_priv: "{{ item.write_priv | d(omit) }}"
+    tags: "{{ item.tags | d(omit) }}"
+    state: "{{ item.state | d(omit) }}"
   with_items: "{{ rabbitmq_users }}"
+  run_once: true
