@@ -5,14 +5,14 @@
     state: present
   when: not rabbitmq_os_package
 
-  - name: Add rabbitmq repository's key
+- name: Add rabbitmq repository's key
   apt_key:
     keyserver: "keyserver.ubuntu.com"
     id: F77F1EDA57EBB1CC
     state: present
   when: not rabbitmq_os_package
 
- - name: Add rabbitmq repository's key
+- name: Add rabbitmq repository's key
   apt_key:
     keyserver: "keyserver.ubuntu.com"
     id: F6609E60DC62814E
