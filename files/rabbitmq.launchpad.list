@@ -1,0 +1,4 @@
+deb http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu xenial main
+deb http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu bionic main
+deb https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ bionic main
+deb https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ xenial main
