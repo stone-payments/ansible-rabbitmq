@@ -5,6 +5,20 @@
     state: present
   when: not rabbitmq_os_package
 
+  - name: Add rabbitmq repository's key
+  apt_key:
+    keyserver: "keyserver.ubuntu.com"
+    id: F77F1EDA57EBB1CC
+    state: present
+  when: not rabbitmq_os_package
+
+ - name: Add rabbitmq repository's key
+  apt_key:
+    keyserver: "keyserver.ubuntu.com"
+    id: F6609E60DC62814E
+    state: present
+  when: not rabbitmq_os_package
+
 - name: Add launchpad rabbitmq repository
   copy:
     src: rabbitmq.launchpad.list
