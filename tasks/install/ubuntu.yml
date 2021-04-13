@@ -26,6 +26,15 @@
     backup: true
   when: not rabbitmq_os_package
 
+- name: Wait for dpkg locks
+  shell: while fuser /var/lib/dpkg/{{ item }} >/dev/null 2>&1; do sleep 1; done;
+  with_items:
+    - lock
+    - lock-frontend
+
+- name: Wait for apt lock
+  shell: while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; done;
+  
 - name: Install rabbitmq-server
   apt:
     name: rabbitmq-server={{ rabbitmq_package }}
