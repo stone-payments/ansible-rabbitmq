@@ -67,33 +67,33 @@ rabbitmq_plugins:
   - name: rabbitmq_shovel_management
     state: enabled
 
-  # RabbitMQ Users
-  rabbitmq_manage_users: true
-  # The management UI requires authentication and authorisation. For more details see: https://www.rabbitmq.com/management.html#permissions
-  # User has no permissions by default. vhost, write_priv, read_priv and configure_priv are ignored when permissions list is defined.
-  rabbitmq_users: []
-    # Single vhost permissions
-    # - user: "{{ vault_rabbitmq_user1_username }}"
-    #   password: "{{ vault_rabbitmq_user1_password }}"
-    #   vhost: somevhost # (Optional) vhost to apply access privileges. Default: "/".
-    #   read_priv: .*
-    #   write_priv: .*
-    #   configure_priv: .*
-    #   tags: administrator
+# RabbitMQ Users
+rabbitmq_manage_users: true
+# The management UI requires authentication and authorisation. For more details see: https://www.rabbitmq.com/management.html#permissions
+# User has no permissions by default. vhost, write_priv, read_priv and configure_priv are ignored when permissions list is defined.
+rabbitmq_users: []
+# Single vhost permissions
+# - user: "{{ vault_rabbitmq_user1_username }}"
+#   password: "{{ vault_rabbitmq_user1_password }}"
+#   vhost: somevhost # (Optional) vhost to apply access privileges. Default: "/".
+#   read_priv: .*
+#   write_priv: .*
+#   configure_priv: .*
+#   tags: administrator
 
-    # Multiple vhost permissions
-    # - user: "{{ vault_rabbitmq_admin_username }}"
-    #   password: "{{ vault_rabbitmq_admin_password }}"
-    #   permissions:
-    #     - vhost: "/"
-    #       configure_priv: .*
-    #       read_priv: .*
-    #       write_priv: .*
-    #     - vhost: "anothervhost"
-    #       configure_priv: .*
-    #       read_priv: .*
-    #       write_priv: .*
-    #   tags: administrator
+# Multiple vhost permissions
+# - user: "{{ vault_rabbitmq_admin_username }}"
+#   password: "{{ vault_rabbitmq_admin_password }}"
+#   permissions:
+#     - vhost: "/"
+#       configure_priv: .*
+#       read_priv: .*
+#       write_priv: .*
+#     - vhost: "anothervhost"
+#       configure_priv: .*
+#       read_priv: .*
+#       write_priv: .*
+#   tags: administrator
 
 # RabbitMQ Rest API Login Credentials
 rabbitmq_api_login_credentials: {}
