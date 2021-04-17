@@ -60,12 +60,9 @@ rabbitmq_bin_path: /usr/lib/rabbitmq/bin
 rabbitmq_sbin_path: /usr/lib/rabbitmq/sbin
 rabbitmq_plugins_prefix_path: /usr/lib/rabbitmq
 rabbitmq_plugins:
-  - name: rabbitmq_management
-    state: enabled
-  - name: rabbitmq_shovel
-    state: enabled
-  - name: rabbitmq_shovel_management
-    state: enabled
+  - rabbitmq_management
+  - rabbitmq_shovel
+  - rabbitmq_shovel_management
 
   # RabbitMQ Users
   rabbitmq_manage_users: true
