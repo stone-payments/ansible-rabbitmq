@@ -18,3 +18,5 @@
     durable: "{{ binding_item.value.durable | default(omit) }}"
     internal: "{{ binding_item.value.internal | default(omit) }}"
     state: "{{ binding_item.value.state | default(omit) }}"
+  delegate_to: localhost
+  become: false
