@@ -99,14 +99,31 @@ For RedHat machines make sure the machines are subscribed. Also, this role requi
 
   # RabbitMQ Users
   rabbitmq_manage_users: true
-
-  # The same format of the rabbitmq_users_default variable.
   # The management UI requires authentication and authorisation. For more details see: https://www.rabbitmq.com/management.html#permissions
-  rabbitmq_users: {}
-  rabbitmq_users_default:
-    admin:
-      password: rabbitmq
-      tags: administrator
+  # User has no permissions by default. vhost, write_priv, read_priv and configure_priv are ignored when permissions list is defined.
+  rabbitmq_users: []
+    # Single vhost permissions
+    # - user: "{{ vault_rabbitmq_user1_username }}"
+    #   password: "{{ vault_rabbitmq_user1_password }}"
+    #   vhost: somevhost # (Optional) vhost to apply access privileges. Default: "/".
+    #   read_priv: .*
+    #   write_priv: .*
+    #   configure_priv: .*
+    #   tags: administrator
+
+    # Multiple vhost permissions
+    # - user: "{{ vault_rabbitmq_admin_username }}"
+    #   password: "{{ vault_rabbitmq_admin_password }}"
+    #   permissions:
+    #     - vhost: "/"
+    #       configure_priv: .*
+    #       read_priv: .*
+    #       write_priv: .*
+    #     - vhost: "anothervhost"
+    #       configure_priv: .*
+    #       read_priv: .*
+    #       write_priv: .*
+    #   tags: administrator
 
   # RabbitMQ Vhosts
   rabbitmq_manage_vhosts: false  # (true | false) to manage VHosts

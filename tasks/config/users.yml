@@ -1,24 +1,9 @@
 ---
-- name: Creates rabbitmq_users_list fact
-  set_fact:
-    rabbitmq_users_list: {}
-
 - name: Ensure that rabbitmq guest user is removed
   rabbitmq_user:
     user: guest
     state: absent
   no_log: true
-
-- name: Combine rabbitmq_users_default with rabbitmq_users
-  set_fact:
-    rabbitmq_users_list: "{{ rabbitmq_users_default | default({}, true) | combine(rabbitmq_users | default({}, true), recursive=True) }}"
-
-# WITCHCRAFT: convert a list into a dict using a specific value as key and the whole list as value
-# - set_fact:
-#     rabbitmq_users_list: "{{ rabbitmq_users_list | default({}) | combine({ item.user: item }, recursive=True) }}"
-#   with_items:
-#     - "{{ rabbitmq_users_default }}"
-#     - "{{ rabbitmq_users | default([]) }}"
 
 - name: Show users to be processed
   debug:
@@ -27,14 +12,15 @@
 
 - name: Create RabbitMQ users
   rabbitmq_user:
-    user: "{{ item.key }}"
-    password: "{{ item.value.password }}"
-    vhost: "{{ item.value.vhost | default (omit) }}"
-    configure_priv: "{{ item.value.configure_priv | default('.*') }}"
-    read_priv: "{{ item.value.read_priv | default('.*') }}"
-    write_priv: "{{ item.value.write_priv | default('.*') }}"
-    tags: "{{ item.value.tags | default(omit) }}"
-    state: "{{ item.value.state | default('present') }}"
-    update_password: "{{ item.value.update_password | default('always') }}"
+    user: "{{ item.user }}"
+    password: "{{ item.password }}"
+    vhost: "{{ item.vhost | default (omit) }}"
+    permissions: "{{ item.permissions | default(omit) }}"
+    configure_priv: "{{ item.configure_priv | default(omit) }}"
+    read_priv: "{{ item.read_priv | default(omit) }}"
+    write_priv: "{{ item.write_priv | default(omit) }}"
+    tags: "{{ item.tags | default(omit) }}"
+    state: "{{ item.state | default('present') }}"
+    update_password: "{{ item.update_password | default('always') }}"
   no_log: true
-  with_dict: "{{ rabbitmq_users_list }}"
+  loop: "{{ rabbitmq_users }}"
