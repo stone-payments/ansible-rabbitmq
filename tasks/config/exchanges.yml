@@ -17,3 +17,5 @@
     durable: "{{ exchange_item.value.durable | default(omit) }}"
     internal: "{{ exchange_item.value.internal | default(omit) }}"
     state: "{{ exchange_item.value.state | default(omit) }}"
+  delegate_to: localhost
+  become: false
