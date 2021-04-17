@@ -5,11 +5,6 @@
     state: absent
   no_log: true
 
-- name: Show users to be processed
-  debug:
-    msg: "{{ rabbitmq_users_list }}"
-    verbosity: 2
-
 - name: Create RabbitMQ users
   rabbitmq_user:
     user: "{{ item.user }}"
