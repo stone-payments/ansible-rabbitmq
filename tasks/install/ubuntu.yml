@@ -1,17 +1,40 @@
 ---
-- name: Add bintray rabbitmq repository's key
+- name: Add rabbitmq repository's key
   apt_key:
-    url: "https://bintray.com/user/downloadSubjectPublicKey?username=rabbitmq"
+    url: "https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc"
     state: present
   when: not rabbitmq_os_package
 
-- name: Add bintray rabbitmq repository
+- name: Add rabbitmq repository's key
+  apt_key:
+    keyserver: "keyserver.ubuntu.com"
+    id: F77F1EDA57EBB1CC
+    state: present
+  when: not rabbitmq_os_package
+
+- name: Add rabbitmq repository's key
+  apt_key:
+    keyserver: "keyserver.ubuntu.com"
+    id: F6609E60DC62814E
+    state: present
+  when: not rabbitmq_os_package
+
+- name: Add launchpad rabbitmq repository
   copy:
-    src: rabbitmq.bintray.list
+    src: rabbitmq.launchpad.list
     dest: /etc/apt/sources.list.d/
     backup: true
   when: not rabbitmq_os_package
 
+- name: Wait for dpkg locks
+  shell: while fuser /var/lib/dpkg/{{ item }} >/dev/null 2>&1; do sleep 1; done;
+  with_items:
+    - lock
+    - lock-frontend
+
+- name: Wait for apt lock
+  shell: while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; done;
+  
 - name: Install rabbitmq-server
   apt:
     name: rabbitmq-server={{ rabbitmq_package }}
