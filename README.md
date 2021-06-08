@@ -67,7 +67,7 @@ For RedHat machines make sure the machines are subscribed. Also, this role requi
   rabbitmq_erlang_cookie: ""
   rabbitmq_erlang_cookie_file_path: "{{ rabbitmq_home_path }}.erlang.cookie"
 
-  # Variables can be overriden to adapt to the user case
+  # Variables can be overridden to adapt to the user case
   rabbitmq_conf_disk_free_limit_mem_relative: 1.5
   rabbitmq_conf_vm_memory_high_watermark: 0.4
   rabbitmq_conf_num_acceptors_tcp: 10
@@ -101,7 +101,7 @@ For RedHat machines make sure the machines are subscribed. Also, this role requi
   rabbitmq_manage_users: true
 
   # The same format of the rabbitmq_users_default variable.
-  # The management UI requires authentication and authorisation. For more details see: https://www.rabbitmq.com/management.html#permissions
+  # The management UI requires authentication and authorization. For more details see: https://www.rabbitmq.com/management.html#permissions
   rabbitmq_users: {}
   rabbitmq_users_default:
     admin:
@@ -113,7 +113,7 @@ For RedHat machines make sure the machines are subscribed. Also, this role requi
   rabbitmq_vhosts:
     name_of_vhost:
       state: present
-      set_limit: true  # (Optional) Set this to configue vhost limits
+      set_limit: true  # (Optional) Set this to configure vhost limits
       max_connections: 0
       max_queues: 0
 
@@ -134,7 +134,7 @@ For RedHat machines make sure the machines are subscribed. Also, this role requi
   rabbitmq_manage_queues: false  # (true | false) to manage Queues
   rabbitmq_queues:
     name_of_queue:
-      vhost: # (Optional) Set this to configue vhost for queue. The default value is "/".
+      vhost: # (Optional) Set this to configure vhost for queue. The default value is "/".
       state: present
 
   # RabbitMQ Exchanges
@@ -143,8 +143,8 @@ For RedHat machines make sure the machines are subscribed. Also, this role requi
   ## For more parameters see the official ansible documentation for this module at https://docs.ansible.com/ansible/latest/modules/rabbitmq_exchange_module.html
   rabbitmq_exchanges:
     name_of_exchange:
-      vhost: # (Optional) Set this to configue vhost for exchange. The default value is "/".
-      type: # (Optional) Set this to configue type for exchange. The default value is "direct".
+      vhost: # (Optional) Set this to configure vhost for exchange. The default value is "/".
+      type: # (Optional) Set this to configure type for exchange. The default value is "direct".
       state: present
 
   # RabbitMQ Bindings
@@ -153,10 +153,10 @@ For RedHat machines make sure the machines are subscribed. Also, this role requi
   ## For more parameters see the official ansible documentation for this module at https://docs.ansible.com/ansible/latest/modules/rabbitmq_binding_module.html
   rabbitmq_bindings:
     name_of_source_exchange_binding:
-      vhost: # (Optional) Set this to configue vhost for binding. The default value is "/".
-      type: # (Mandatory) Set this to configue type for binding.
+      vhost: # (Optional) Set this to configure vhost for binding. The default value is "/".
+      type: # (Mandatory) Set this to configure type for binding.
       destination: # (Mandatory) Set the destination exchange or queue for the binding.
-      routing_key: # (Optional) Set this to configue routing key for the binding.. The default value is "#".
+      routing_key: # (Optional) Set this to configure routing key for the binding.. The default value is "#".
       state: present
 
   # RabbitMQ Policy
@@ -210,7 +210,7 @@ By default this role will install the currently last upstream version of RabbitM
       - role: stone-payments.rabbitmq
         rabbitmq_major: 3
         rabbitmq_minor: 8
-        rabbitmq_patch: 5
+        rabbitmq_patch: 16
 ```
 
 By default the role will try the configure the NODENAME with `rabbit@{{ ansible_nodename }}` when clustering is enabled, if you want to customize the node name, you can substitute the NODENAME with the variables `rabbitmq_nodename_prefix`.
@@ -276,7 +276,7 @@ molecule test [-s scenario_name]
 
 ## To Do
 
-- Add tests for the conection/read/write of rabbit's queues
+- Add tests for the connection/read/write of rabbit's queues
 - Test removing flush_handlers from clustering step
 - Bug: when the master is down and the clustering step is run all the other nodes will go down.
 

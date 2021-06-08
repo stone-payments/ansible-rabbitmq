@@ -14,7 +14,7 @@ rabbitmq_install_enabled: true
 # Install specific RabbitMQ version, unless it's redefined
 rabbitmq_major: 3
 rabbitmq_minor: 8
-rabbitmq_patch: 5
+rabbitmq_patch: 16
 rabbitmq_suffix: 1
 rabbitmq_release: "*"
 rabbitmq_version: "{{ rabbitmq_major }}.{{ rabbitmq_minor }}.{{ rabbitmq_patch }}"
@@ -35,7 +35,6 @@ rabbitmq_conf_extra_settings:
 rabbitmq_default_loglevel: warning
 rabbitmq_erlang_cookie: ""
 rabbitmq_erlang_cookie_file_path: "{{ rabbitmq_home_path }}.erlang.cookie"
-
 
 # Variables can be overriden to adapt to the user case
 rabbitmq_conf_disk_free_limit_mem_relative: 1.5
