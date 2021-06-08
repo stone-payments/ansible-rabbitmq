@@ -20,10 +20,10 @@ loopback_users.{{ rabbitmq_newrelic_username }} = true
 ##
 ## Resource Limits & Flow Control
 ## ==============================
-{% if not rabbitmq_conf_extra_settings.hasKey(vm_memory_high_watermark) %}
+{% if not ('vm_memory_high_watermark.absolute' in rabbitmq_conf_extra_settings or 'vm_memory_high_watermark.relative' in rabbitmq_conf_extra_settings) %}
 vm_memory_high_watermark.relative = {{ rabbitmq_conf_vm_memory_high_watermark | default ("0.4")}}
 {% endif %}
-{% if not rabbitmq_conf_extra_settings.hasKey(disk_free_limit) %}
+{% if not ('disk_free_limit.absolute' in rabbitmq_conf_extra_settings or 'disk_free_limit.relative' in rabbitmq_conf_extra_settings) %}
 disk_free_limit.relative = {{ rabbitmq_conf_disk_free_limit_mem_relative }}
 {% endif %}
 
