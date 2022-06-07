@@ -37,10 +37,9 @@
 
 - name: Install erlang package
   apt:
-    name: "{{ erlang_packages }}={{ erlang_version }}"
+    name: {{ erlang_packages }}
     update_cache: true
     state: present
-    force: true
 
 - name: Install rabbitmq-server
   apt:
