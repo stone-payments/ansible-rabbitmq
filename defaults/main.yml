@@ -114,3 +114,24 @@ rabbitmq_newrelic_vhosts:
 rabbitmq_newrelic_labels:
   env: ""
   role: ""
+
+# Erlang
+erlang_version: 1:23.3.4.14-1rmq1ppa1~ubuntu16.04.1
+erlang_packages:
+  - erlang-base
+  - erlang-asn1
+  - erlang-crypto
+  - erlang-eldap
+  - erlang-ftp
+  - erlang-inets
+  - erlang-mnesia
+  - erlang-os-mon
+  - erlang-parsetools
+  - erlang-public-key
+  - erlang-runtime-tools
+  - erlang-snmp
+  - erlang-ssl
+  - erlang-syntax-tools
+  - erlang-tftp
+  - erlang-tools
+  - erlang-xmerl

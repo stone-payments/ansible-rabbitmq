@@ -34,7 +34,14 @@
 
 - name: Wait for apt lock
   shell: while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; done;
-  
+
+- name: Install erlang package
+  apt:
+    name: "{{ erlang_packages }}={{ erlang_version }}"
+    update_cache: true
+    state: present
+    force: true
+
 - name: Install rabbitmq-server
   apt:
     name: rabbitmq-server={{ rabbitmq_package }}
