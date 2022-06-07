@@ -37,7 +37,7 @@
 
 - name: Install erlang package
   apt:
-    name: {{ erlang_packages }}
+    name: "{{ erlang_packages }}"
     update_cache: true
     state: present
 
