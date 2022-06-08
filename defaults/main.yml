@@ -116,22 +116,4 @@ rabbitmq_newrelic_labels:
   role: ""
 
 # Erlang
-erlang_version: 1:23.3.4.14-1rmq1ppa1~ubuntu16.04.1
-erlang_packages:
-  - "erlang-base={{ erlang_version }}"
-  - "erlang-asn1={{ erlang_version }}"
-  - "erlang-crypto={{ erlang_version }}"
-  - "erlang-eldap={{ erlang_version }}"
-  - "erlang-ftp={{ erlang_version }}"
-  - "erlang-inets={{ erlang_version }}"
-  - "erlang-mnesia={{ erlang_version }}"
-  - "erlang-os-mon={{ erlang_version }}"
-  - "erlang-parsetools={{ erlang_version }}"
-  - "erlang-public-key={{ erlang_version }}"
-  - "erlang-runtime-tools={{ erlang_version }}"
-  - "erlang-snmp={{ erlang_version }}"
-  - "erlang-ssl={{ erlang_version }}"
-  - "erlang-syntax-tools={{ erlang_version }}"
-  - "erlang-tftp={{ erlang_version }}"
-  - "erlang-tools={{ erlang_version }}"
-  - "erlang-xmerl={{ erlang_version }}"
+erlang_version: "1:24.3"
