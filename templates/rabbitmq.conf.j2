@@ -7,7 +7,7 @@
 
 ## Networking
 ## ====================
-listeners.tcp.default = {{ rabbitmq_conf_tcp_listeners_address ~ ":" if rabbitmq_conf_tcp_listeners_address is defined and rabbitmq_conf_tcp_listeners_address|ipaddr else ":::" }}{{ rabbitmq_conf_tcp_listeners_port | default("5672")}}
+listeners.tcp.default = {{ rabbitmq_conf_tcp_listeners_address ~ ":" if rabbitmq_conf_tcp_listeners_address is defined and rabbitmq_conf_tcp_listeners_address|ansible.utils.ipaddr else ":::" }}{{ rabbitmq_conf_tcp_listeners_port | default("5672")}}
 num_acceptors.tcp = {{ rabbitmq_conf_num_acceptors_tcp | default("10")}}
 
 {% if rabbitmq_newrelic_agent_enabled %}
