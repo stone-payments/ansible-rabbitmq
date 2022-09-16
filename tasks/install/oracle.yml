@@ -45,21 +45,24 @@
         description: RabbitMQ-Server Repo
   when: rabbitmq_repository_on_satellite | length == 0
 
-- name: Install rabbitmq-server dependencies (RedHat)
+- name: Install rabbitmq-server dependencies (OracleLinux)
   yum:
-    name: libselinux-python
+    name: "{{ item }}"
     state: present
-  when: 
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version == '7'
+  with_items:
+    - python3-libselinux
+    - python3-libsemanage
+  when:
+    - ansible_distribution == 'OracleLinux'
+    - ansible_distribution_major_version == '8'
 
 - name: Install rabbitmq-server {{ rabbitmq_version }}
   yum:
-    name: "rabbitmq-server-{{ rabbitmq_package }}.el7.noarch"
+    name: "rabbitmq-server-{{ rabbitmq_package }}.el8.noarch"
     state: present
   when:
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution_major_version == '7'
+    - ansible_distribution == 'OracleLinux'
+    - ansible_distribution_major_version == '8'
 
 - name: Ensure rabbitmq server is started and enabled
   service:
