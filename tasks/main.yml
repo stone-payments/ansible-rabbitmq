@@ -1,9 +1,11 @@
 ---
 - name: Install RabbitMQ on {{ ansible_distribution }}
   include_tasks: "install/{{ rabbitmq_install_task }}"
-  when: rabbitmq_install_enabled
+  when:
+    - rabbitmq_install_enabled
+    - ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux'
   vars:
-    rabbitmq_install_task: "{{ (ansible_os_family | lower) if (ansible_os_family == 'RedHat' and ansible_distribution != "OracleLinux") else (ansible_distribution | lower) }}.yml"
+    rabbitmq_install_task: "{{ (ansible_distribution | lower) if (ansible_distribution == 'RedHat' or ansible_distribution == 'OracleLinux') else (ansible_distribution | lower) }}.yml"
   tags: rabbitmq_install
 
 - name: Tasks to configure RabbitMQ service
