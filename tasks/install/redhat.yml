@@ -1,5 +1,5 @@
 ---
-- name: Subscribe to puppet repository on satellite.
+- name: Subscribe to the package repository
   rhsm_repository:
     name: "{{ item }}"
     state: enabled
@@ -45,14 +45,9 @@
         description: RabbitMQ-Server Repo
   when: rabbitmq_repository_on_satellite | length == 0
 
-- name: Install rabbitmq-server dependencies (RedHat)
-  yum:
-    name: libselinux-python
-    state: present
-
 - name: Install rabbitmq-server {{ rabbitmq_version }}
   yum:
-    name: "rabbitmq-server-{{ rabbitmq_package }}.el7.noarch"
+    name: "rabbitmq-server-{{ rabbitmq_package }}.el*.noarch"
     state: present
 
 - name: Ensure rabbitmq server is started and enabled
