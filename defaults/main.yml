@@ -13,7 +13,7 @@ rabbitmq_install_enabled: true
 
 # Install specific RabbitMQ version, unless it's redefined
 rabbitmq_major: 3
-rabbitmq_minor: 8
+rabbitmq_minor: 11
 rabbitmq_patch: 5
 rabbitmq_suffix: 1
 rabbitmq_release: "*"
