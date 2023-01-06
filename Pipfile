@@ -12,7 +12,6 @@ selinux = "*"
 docker = "*"
 ansible-lint = "*"
 yamllint = "*"
-pytest-testinfra = "*"
 autopep8 = "*"
 flake8 = "*"
 
