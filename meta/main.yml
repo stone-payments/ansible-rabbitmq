@@ -1,6 +1,7 @@
 ---
 galaxy_info:
   role_name: rabbitmq
+  namespace: stone
   author: Carlos Martins
   description: Role for installing RabbitMQ server
   company: Stone Pagamentos S.A.
@@ -9,8 +10,7 @@ galaxy_info:
   platforms:
     - name: EL
       versions:
-        - 6
-        - 7
+        - all
     - name: Fedora
       versions:
         - all

@@ -4,23 +4,23 @@
   become: true
   tasks:
     - name: Install python for Ansible
-      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      ansible.builtin.raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
       changed_when: false
 
     - name: Install epel-release
-      include_role:
+      ansible.builtin.include_role:
         name: stone-payments.epel
       when: ansible_os_family == "RedHat"
 
     - name: Install required packages
-      yum:
+      ansible.builtin.yum:
         name:
           - net-tools
           - glibc-common
         state: present
 
     - name: Force locale en_US.utf8
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/environment
         state: present
         regexp: "{{ item.regexp }}"
@@ -32,7 +32,7 @@
           line: "LC_ALL=en_US.utf8"
 
     - name: Configures the hostname in the /etc/hosts
-      lineinfile:
+      ansible.builtin.lineinfile:
         state: present
         dest: /etc/hosts
         regexp: "^{{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}"

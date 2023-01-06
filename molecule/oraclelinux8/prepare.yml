@@ -1,0 +1,20 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+  # - name: Install python for Ansible
+  #   ansible.builtin.package:
+  #     name: python-minimal
+  #     state: present
+
+  # - name: Install epel-release
+  #   include_role:
+  #     name: stone-payments.epel
+  #   when: ansible_os_family == "RedHat"
+
+  # - name: Install required packages
+  #   yum:
+  #     name:
+  #       - net-tools
+  #       - glibc-common
+  #     state: present

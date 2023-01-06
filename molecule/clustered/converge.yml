@@ -3,4 +3,4 @@
   hosts: all
   become: true
   roles:
-    - stone-payments.rabbitmq
+    - stone.rabbitmq

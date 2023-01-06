@@ -1,6 +1,6 @@
 ---
 - name: Manage Bindings
-  rabbitmq_binding:
+  community.rabbitmq.rabbitmq_binding:
     login_user: "{{ binding_item.login_user | default(rabbitmq_api_login_credentials['login_user'] | default(omit)) }}"
     login_password: "{{ binding_item.login_password | default(rabbitmq_api_login_credentials['login_password'] | default(omit)) }}"
     login_host: "{{ binding_item.login_host | default(rabbitmq_api_login_credentials['login_host'] | default(omit)) }}"

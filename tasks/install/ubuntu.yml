@@ -1,35 +1,35 @@
 ---
 - name: Add bintray rabbitmq repository's key
-  apt_key:
+  ansible.builtin.apt_key:
     url: "https://bintray.com/user/downloadSubjectPublicKey?username=rabbitmq"
     state: present
   when: not rabbitmq_os_package
 
 - name: Add bintray rabbitmq repository
-  copy:
+  ansible.builtin.copy:
     src: rabbitmq.bintray.list
     dest: /etc/apt/sources.list.d/
     backup: true
   when: not rabbitmq_os_package
 
 - name: Install rabbitmq-server
-  apt:
+  ansible.builtin.apt:
     name: rabbitmq-server={{ rabbitmq_package }}
     update_cache: true
     state: present
     force: true
 
 - name: Update locale
-  command: update-locale LC_ALL=en_US.UTF-8
+  ansible.builtin.command: update-locale LC_ALL=en_US.UTF-8
   changed_when: false
 
 - name: Ensure that rabbitmq server is started and enabled
-  service:
+  ansible.builtin.service:
     name: rabbitmq-server
     state: started
     enabled: true
   register: rabbitmq_service
 
 - name: Ensure that rabbitmq app is started so we can interact with rabbit
-  command: rabbitmqctl start_app
+  ansible.builtin.command: rabbitmqctl start_app
   when: rabbitmq_service is changed

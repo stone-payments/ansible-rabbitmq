@@ -1,6 +1,6 @@
 ---
 - name: Manage Queues
-  rabbitmq_queue:
+  community.rabbitmq.rabbitmq_queue:
     login_user: "{{ queue_item.login_user | default(rabbitmq_api_login_credentials['login_user'] | default(omit)) }}"
     login_password: "{{ queue_item.login_password | default(rabbitmq_api_login_credentials['login_password'] | default(omit)) }}"
     login_host: "{{ queue_item.login_host | default(rabbitmq_api_login_credentials['login_host'] | default(omit)) }}"

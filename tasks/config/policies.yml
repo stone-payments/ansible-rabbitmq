@@ -1,6 +1,6 @@
 ---
 - name: Ensure that default vhost contains the HA policy
-  rabbitmq_policy:
+  community.rabbitmq.rabbitmq_policy:
     name: "pol-ha-default-vhost"
     vhost: "/"
     pattern: ".*"
@@ -13,7 +13,7 @@
     - rabbitmq_clustering_ha_default
 
 - name: Manage VHost Policies
-  rabbitmq_policy:
+  community.rabbitmq.rabbitmq_policy:
     name: "pol-{{ item.key }}"
     vhost: "{{ item.value.vhost }}"
     pattern: "{{ item.value.pattern }}"

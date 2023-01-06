@@ -1,27 +1,27 @@
 ---
 - name: Install RabbitMQ on {{ ansible_distribution }}
-  include_tasks: "install/{{ rabbitmq_install_task }}"
+  ansible.builtin.include_tasks: "install/{{ rabbitmq_install_task }}"
   when: rabbitmq_install_enabled
   vars:
     rabbitmq_install_task: "{{ (ansible_os_family | lower) if (ansible_os_family == 'RedHat') else (ansible_distribution | lower) }}.yml"
   tags: rabbitmq_install
 
 - name: Tasks to configure RabbitMQ service
-  include_tasks: config/main.yml
+  ansible.builtin.include_tasks: config/main.yml
   tags: rabbitmq_configuration
 
 - name: Install plugins tasks
-  include_tasks: config/plugins.yml
+  ansible.builtin.include_tasks: config/plugins.yml
   when: rabbitmq_manage_plugins
   tags: rabbitmq_plugins
 
 - name: Configure cluster
-  include_tasks: config/clustering.yml
+  ansible.builtin.include_tasks: config/clustering.yml
   when: rabbitmq_clustering_enabled
   tags: rabbitmq_clustering
 
 - name: Tasks to manage RabbitMQ Vhosts
-  include_tasks: config/vhosts.yml
+  ansible.builtin.include_tasks: config/vhosts.yml
   when: rabbitmq_manage_vhosts
   with_items: "{{ rabbitmq_vhosts | dict2items }}"
   loop_control:
@@ -30,13 +30,13 @@
   run_once: true
 
 - name: Tasks to manage RabbitMQ Users
-  include_tasks: config/users.yml
+  ansible.builtin.include_tasks: config/users.yml
   when: rabbitmq_manage_users
   tags: rabbitmq_users
   run_once: true
 
 - name: Tasks to manage RabbitMQ Queues
-  include_tasks: config/queues.yml
+  ansible.builtin.include_tasks: config/queues.yml
   when: rabbitmq_manage_queues
   with_items: "{{ rabbitmq_queues | dict2items }}"
   loop_control:
@@ -45,7 +45,7 @@
   run_once: true
 
 - name: Tasks to manage RabbitMQ Exchanges
-  include_tasks: config/exchanges.yml
+  ansible.builtin.include_tasks: config/exchanges.yml
   when: rabbitmq_manage_exchanges
   with_items: "{{ rabbitmq_exchanges | dict2items }}"
   loop_control:
@@ -54,7 +54,7 @@
   run_once: true
 
 - name: Tasks to manage RabbitMQ Bindings
-  include_tasks: config/bindings.yml
+  ansible.builtin.include_tasks: config/bindings.yml
   when: rabbitmq_manage_bindings
   with_items: "{{ rabbitmq_bindings | dict2items }}"
   loop_control:
@@ -63,11 +63,11 @@
   run_once: true
 
 - name: Tasks to manage RabbitMQ Policies
-  include_tasks: config/policies.yml
+  ansible.builtin.include_tasks: config/policies.yml
   tags: rabbitmq_policies
   run_once: true
 
 - name: Configure new-relic rabbitmq infra agent
-  include_tasks: config/monitoring-newrelic.yml
+  ansible.builtin.include_tasks: config/monitoring-newrelic.yml
   when: rabbitmq_newrelic_agent_enabled
   tags: rabbitmq_monitoring
