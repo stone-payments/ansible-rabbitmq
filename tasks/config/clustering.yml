@@ -1,6 +1,6 @@
 ---
 - name: Check if cluster has to be enabled and cluster_name is defined
-  assert:
+  ansible.builtin.assert:
     that:
       - rabbitmq_clustering_enabled
       - rabbitmq_clustering_cluster_name | default('', true) | length > 4
@@ -8,66 +8,71 @@
   run_once: true
 
 - name: Set dynamic group name
-  set_fact:
+  ansible.builtin.set_fact:
     cluster_group_name: "rmq_cluster_{{ rabbitmq_clustering_cluster_name }}"
   run_once: true
 
 - name: Set dynamic group based on cluster_name
-  group_by:
+  ansible.builtin.group_by:
     key: "{{ cluster_group_name }}"
   run_once: true
 
 - name: Show the name of master node
-  debug:
+  ansible.builtin.debug:
     msg: "{{ groups[cluster_group_name][0] }}"
     verbosity: 2
   run_once: true
 
 - name: Check RabbitMQ is running in cluster mode
-  command: rabbitmqctl cluster_status --formatter json
+  ansible.builtin.command: rabbitmqctl cluster_status --formatter json
   delegate_to: "{{ groups[cluster_group_name][0] }}"
   run_once: true
   changed_when: false
   register: rabbitmq_cluster_status
 
 - name: Set rabbitmq_cluster_running_nodes fact
-  set_fact:
+  ansible.builtin.set_fact:
     rabbitmq_cluster_status: "{{ rabbitmq_cluster_status.stdout | from_json }}"
   run_once: true
 
 - name: Task block to clear new nodes before joining to cluster
-  block:
-    - name: Stop rabbitmq app
-      command: rabbitmqctl stop_app
-
-    - name: Reset rabbitmq before entering cluster
-      command: rabbitmqctl force_reset
-
-    - name: Force forget cluster node on 'master'
-      command: "rabbitmqctl forget_cluster_node {{ rabbitmq_node }}"
-      delegate_to: "{{ groups[cluster_group_name][0] }}"
-      when: rabbitmq_node in rabbitmq_cluster_status['running_nodes']
-
-    - name: Waiting for a while to nodes stabilize themselves
-      wait_for:
-        timeout: 15
-
-    - name: Join rabbitmq cluster
-      command: rabbitmqctl join_cluster "rabbit@{{ groups[cluster_group_name][0] }}"
-      register: cluster_joined
-      retries: 3
-      delay: 15
-
-    - name: Start rabbitmq app
-      command: rabbitmqctl start_app
-  vars:
-    rabbitmq_node: "rabbit@{{ ansible_nodename }}"
   when:
     - ansible_nodename != groups[cluster_group_name][0]
     - (rabbitmq_node not in rabbitmq_cluster_status['running_nodes']) or (rabbitmq_clustering_force)
+  vars:
+    rabbitmq_node: "rabbit@{{ ansible_nodename }}"
+  block:
+    - name: Stop rabbitmq app
+      ansible.builtin.command: rabbitmqctl stop_app
+      changed_when: false
+
+    - name: Reset rabbitmq before entering cluster
+      ansible.builtin.command: rabbitmqctl force_reset
+      changed_when: false
+
+    - name: Force forget cluster node on 'master'
+      ansible.builtin.command: "rabbitmqctl forget_cluster_node {{ rabbitmq_node }}"
+      delegate_to: "{{ groups[cluster_group_name][0] }}"
+      when: rabbitmq_node in rabbitmq_cluster_status['running_nodes']
+      changed_when: false
+
+    - name: Waiting for a while to nodes stabilize themselves
+      ansible.builtin.wait_for:
+        timeout: 15
+
+    - name: Join rabbitmq cluster
+      ansible.builtin.command: rabbitmqctl join_cluster "rabbit@{{ groups[cluster_group_name][0] }}"
+      register: cluster_joined
+      retries: 3
+      delay: 15
+      changed_when: false
+
+    - name: Start rabbitmq app
+      ansible.builtin.command: rabbitmqctl start_app
+      changed_when: false
 
 - name: Set rabbitmq cluster name
-  rabbitmq_global_parameter:
+  community.rabbitmq.rabbitmq_global_parameter:
     name: cluster_name
     value: "{{ rabbitmq_clustering_cluster_name | to_json }}"
     state: present

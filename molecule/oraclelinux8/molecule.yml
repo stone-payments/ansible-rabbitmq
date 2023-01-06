@@ -11,7 +11,7 @@ lint: |
   flake8
 platforms:
   - name: rabbit01
-    image: centos/systemd
+    image: oraclelinux:8
     command: /usr/sbin/init
     pre_build_image: true
     privileged: true
@@ -26,8 +26,6 @@ platforms:
     environment:
       container: docker
     tty: true
-    dns_servers:
-      - 8.8.8.8
     network_mode: host
     purge_networks: true
     group:
@@ -40,12 +38,8 @@ provisioner:
   inventory:
     group_vars:
       all:
-        rabbitmq_major: 3
-        rabbitmq_minor: 8
-        rabbitmq_patch: 5
         rabbitmq_repository_on_satellite: []
-scenatio:
-  name: default
+scenario:
+  name: oraclelinux8
 verifier:
-  name: testinfra
-  directory: ../../tests/default
+  name: ansible

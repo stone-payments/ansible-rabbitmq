@@ -1,8 +1,4 @@
 ---
-- src: https://github.com/newrelic/infrastructure-agent-ansible.git
-  version: 0.8.2
-  name: newrelic.infrastructure-agent
-
 - src: https://github.com/stone-payments/ansible-epel.git
   version: master
   name: stone-payments.epel

@@ -1,0 +1,13 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Include default role vars
+      ansible.builtin.include_vars:
+        file: ../../defaults/main.yml
+  
+    - name: Include tests
+      ansible.builtin.include_tasks:
+        file: "{{ item }}"
+      loop: "{{ lookup('fileglob', '../../tests/common/*.yml', wantlist=True) }}"

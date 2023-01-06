@@ -1,6 +1,6 @@
 ---
 - name: Review rabbitmq home permission
-  file:
+  ansible.builtin.file:
     state: directory
     path: "{{ rabbitmq_home_path }}"
     owner: "{{ rabbitmq_owner }}"
@@ -8,7 +8,7 @@
     recurse: true
 
 - name: Change enabled_plugins file permissions
-  file:
+  ansible.builtin.file:
     state: touch
     path: "{{ rabbitmq_enabled_plugins_file_path }}"
     owner: "{{ rabbitmq_owner }}"
@@ -18,36 +18,36 @@
     access_time: preserve
 
 - name: Check if rabbitmq_conf_vm_memory_high_watermark is under the recommended range
-  fail:
+  ansible.builtin.fail:
     msg: "The recommended vm_memory_high_watermark range is 0.4 to 0.7."
   when: rabbitmq_conf_vm_memory_high_watermark < 0.4 or rabbitmq_conf_vm_memory_high_watermark > 0.7
 
 - name: Copy the rabbitmq configuration file
-  template:
+  ansible.builtin.template:
     src: rabbitmq.conf.j2
     dest: "{{ rabbitmq_config_file_path }}"
     owner: "{{ rabbitmq_owner }}"
     group: "{{ rabbitmq_group }}"
     mode: "0644"
     backup: true
-  notify: restart rabbitmq
+  notify: Restart rabbitmq
 
 - name: Task block to force longnames when rabbit is in cluster
+  when:
+    - rabbitmq_clustering_enabled
+    - rabbitmq_conf_env is undefined
   block:
     - name: Set additional_env fact with value USE_LONGNAME=true
-      set_fact:
+      ansible.builtin.set_fact:
         additional_env:
           USE_LONGNAME: true
 
     - name: Force longnames when rabbit is in cluster
-      set_fact:
+      ansible.builtin.set_fact:
         rabbitmq_conf_env: "{{ rabbitmq_conf_env | default({}) | combine(additional_env) }}"
-  when:
-    - rabbitmq_clustering_enabled
-    - rabbitmq_conf_env is undefined
 
 - name: Generate rabbitmq environment-variables file
-  template:
+  ansible.builtin.template:
     src: rabbitmq-env.conf.j2
     dest: "{{ rabbitmq_env_variables_file_path }}"
     owner: "{{ rabbitmq_owner }}"
@@ -55,59 +55,59 @@
     mode: "0644"
     backup: true
   when: rabbitmq_conf_env is defined
-  notify: restart rabbitmq
+  notify: Restart rabbitmq
 
 - name: Task block alter number of system's open file if rabbitmq_system_number_open_files is set
+  when: rabbitmq_system_number_open_files > 1024
   block:
     - name: Make sure service.d exists
-      file:
+      ansible.builtin.file:
         path: "{{ rabbitmq_service_d_path }}"
         state: directory
 
     - name: Change limit of system's number of open file
-      template:
+      ansible.builtin.template:
         src: limits.conf.j2
         dest: "{{ rabbitmq_service_d_path }}/limits.conf"
         backup: true
       notify:
-        - daemon reload
-        - restart rabbitmq
-  when: rabbitmq_system_number_open_files > 1024
+        - Daemon reload
+        - Restart rabbitmq
 
 - name: Symlink rabbitmq bin to sbin
-  file:
+  ansible.builtin.file:
     src: "{{ rabbitmq_bin_path }}"
     dest: "{{ rabbitmq_sbin_path }}"
     state: link
 
-- name: Create erlang cookie file at {{ rabbitmq_erlang_cookie_file_path }} if it is undefined
+- name: Create erlang cookie file at {{ rabbitmq_erlang_cookie_file_path }}
+  when: (rabbitmq_erlang_cookie is undefined) or (rabbitmq_erlang_cookie | default(None, true) == None)
+  run_once: true
   block:
     - name: Try to read erlang cookie from a member of the cluster
-      slurp:
+      ansible.builtin.slurp:
         src: "{{ rabbitmq_erlang_cookie_file_path }}"
       register: tmp_erlang_cookie_data
       become_user: "{{ rabbitmq_owner }}"
 
     - name: Try to set a fact based on previous slurp task
-      set_fact:
-        rabbitmq_erlang_cookie: "{{ tmp_erlang_cookie_data['content'] | b64decode | default(omit, true)}}"
+      ansible.builtin.set_fact:
+        rabbitmq_erlang_cookie: "{{ tmp_erlang_cookie_data['content'] | b64decode | default(omit, true) }}"
       failed_when: (rabbitmq_erlang_cookie is undefined) or (rabbitmq_erlang_cookie | default(None, true) == None)
   rescue:
     - name: Set random erlang cookie if it is still undefined
-      set_fact:
+      ansible.builtin.set_fact:
         rabbitmq_erlang_cookie: "{{ lookup('password', '/dev/null length=15 chars=ascii_uppercase,digits') }}"
-  when: (rabbitmq_erlang_cookie is undefined) or (rabbitmq_erlang_cookie | default(None, true) == None)
-  run_once: true
 
 - name: Copy erlang cookie
-  template:
+  ansible.builtin.template:
     src: erlang.cookie.j2
     dest: "{{ rabbitmq_erlang_cookie_file_path }}"
     owner: rabbitmq
     group: rabbitmq
     mode: "0400"
     backup: true
-  notify: restart rabbitmq
+  notify: Restart rabbitmq
 
 - name: Force all notified handlers to run at this point, not waiting for normal sync points
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

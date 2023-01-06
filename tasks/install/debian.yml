@@ -1,31 +1,31 @@
 ---
 - name: Add the official rabbitmq repository's key
-  apt_key:
+  ansible.builtin.apt_key:
     url: "https://www.rabbitmq.com/rabbitmq-release-signing-key.asc"
     state: present
   when: not rabbitmq_os_package
 
 - name: Add the official rabbitmq repository
-  copy:
+  ansible.builtin.copy:
     src: rabbitmq.list
     dest: /etc/apt/sources.list.d/
     backup: true
   when: not rabbitmq_os_package
 
 - name: Install rabbitmq-server
-  apt:
+  ansible.builtin.apt_key:
     name: rabbitmq-server
     update_cache: true
     state: present
     force: true
 
 - name: Ensure rabbitmq server is started and enabled
-  service:
+  ansible.builtin.service:
     name: rabbitmq-server
     state: started
     enabled: true
   register: rabbitmq_service
 
 - name: Ensure rabbitmq app is started so we can interact with rabbit
-  command: rabbitmqctl start_app
+  ansible.builtin.command: rabbitmqctl start_app
   when: rabbitmq_service is changed

@@ -1,0 +1,36 @@
+---
+- name: Stat rabbitmq conf file
+  ansible.builtin.stat:
+    path: "{{ rabbitmq_config_file_path }}"
+  register: file_stat
+
+- name: Check default rabbitmq_config_file_path permissions
+  ansible.builtin.assert:
+    that:
+      - file_stat.stat.exists == True
+      - file_stat.stat.mode == '0644'
+      - file_stat.stat.gr_name == '{{ rabbitmq_group }}'
+      - file_stat.stat.pw_name == '{{ rabbitmq_owner }}'
+
+- name: Get user list
+  ansible.builtin.command: rabbitmqctl list_users
+  register: users
+  changed_when: false
+
+- name: Check if guest user was removed
+  ansible.builtin.assert:
+    that:
+      - '"guest" not in users.stdout'
+
+- name: Get plugin list
+  ansible.builtin.command: rabbitmq-plugins list -e -m
+  register: plugins
+  changed_when: false
+
+- name: Check if plugins are enabled
+  ansible.builtin.assert:
+    that:
+      - plugin.name in plugins.stdout_lines
+  loop: "{{ rabbitmq_plugins }}"
+  loop_control:
+    loop_var: plugin

@@ -1,6 +1,6 @@
 ---
 - name: Manage Exchanges
-  rabbitmq_exchange:
+  community.rabbitmq.rabbitmq_exchange:
     login_user: "{{ exchange_item.login_user | default(rabbitmq_api_login_credentials['login_user'] | default(omit)) }}"
     login_password: "{{ exchange_item.login_password | default(rabbitmq_api_login_credentials['login_password'] | default(omit)) }}"
     login_host: "{{ exchange_item.login_host | default(rabbitmq_api_login_credentials['login_host'] | default(omit)) }}"

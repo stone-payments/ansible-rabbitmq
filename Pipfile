@@ -5,19 +5,17 @@ verify_ssl = true
 
 [dev-packages]
 molecule = "*"
+molecule-docker ="*"
 python-vagrant = "*"
 molecule-vagrant = "*"
 selinux = "*"
 docker = "*"
 ansible-lint = "*"
 yamllint = "*"
-testinfra = "*"
+pytest-testinfra = "*"
 autopep8 = "*"
 flake8 = "*"
 
 [packages]
 ansible = "*"
 netaddr = "*"
-
-[requires]
-python_version = "3.8"

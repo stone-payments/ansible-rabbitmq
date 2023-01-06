@@ -2,4 +2,4 @@
 - name: Converge queue service not clustered
   hosts: all
   roles:
-    - role: stone-payments.rabbitmq
+    - role: stone.rabbitmq
