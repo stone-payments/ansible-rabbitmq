@@ -2,10 +2,8 @@
 # Take the package given by the OS/distrib (Debian-like only)
 rabbitmq_os_package: false
 
-# RabbitMQ repositories in katello
-rabbitmq_repository_on_satellite:
-  - Stone_RabbitMQ_erlang_rhel7
-  - Stone_RabbitMQ_38_rhel7
+# RabbitMQ rhsm repositories
+rabbitmq_repository_on_satellite: []
 
 # Always install RabbitMQ,
 # unless it's already installed and you don't want it to be replaced
