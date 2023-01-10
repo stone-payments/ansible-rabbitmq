@@ -1,20 +1,23 @@
 ---
 - name: Prepare
   hosts: all
+  gather_facts: false
   tasks:
-  # - name: Install python for Ansible
-  #   ansible.builtin.package:
-  #     name: python-minimal
-  #     state: present
+    - name: Install required packages
+      ansible.builtin.yum:
+        name:
+          - python39
+          - python39-pip
+          - python39-setuptools
+          - net-tools
+          - glibc-common
+        state: present
+    
+    - name: Install requests python package
+      ansible.builtin.pip:
+        name: requests
 
-  # - name: Install epel-release
-  #   include_role:
-  #     name: stone-payments.epel
-  #   when: ansible_os_family == "RedHat"
-
-  # - name: Install required packages
-  #   yum:
-  #     name:
-  #       - net-tools
-  #       - glibc-common
-  #     state: present
+    # - name: Install epel-release
+    #   include_role:
+    #     name: stone-payments.epel
+    #   when: ansible_os_family == "RedHat"

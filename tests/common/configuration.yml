@@ -1,36 +1,149 @@
 ---
-- name: Stat rabbitmq conf file
-  ansible.builtin.stat:
-    path: "{{ rabbitmq_config_file_path }}"
-  register: file_stat
+- name: Create admin user with role task
+  ansible.builtin.include_tasks:
+    file: ../../tasks/config/users.yml
+  vars:
+    rabbitmq_users:
+      - user: admin
+        password: password
+        permissions:
+          - vhost: "/"
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
+        tags: administrator
 
-- name: Check default rabbitmq_config_file_path permissions
-  ansible.builtin.assert:
-    that:
-      - file_stat.stat.exists == True
-      - file_stat.stat.mode == '0644'
-      - file_stat.stat.gr_name == '{{ rabbitmq_group }}'
-      - file_stat.stat.pw_name == '{{ rabbitmq_owner }}'
+- name: Set admin user credentials fact
+  ansible.builtin.set_fact:
+    rabbitmq_api_login_credentials:
+      login_user: admin
+      login_password: password
 
 - name: Get user list
   ansible.builtin.command: rabbitmqctl list_users
   register: users
   changed_when: false
 
-- name: Check if guest user was removed
+- name: Check if admin user exists
   ansible.builtin.assert:
     that:
-      - '"guest" not in users.stdout'
+      - '"admin" in users.stdout'
 
-- name: Get plugin list
-  ansible.builtin.command: rabbitmq-plugins list -e -m
-  register: plugins
+- name: Create vhost with role task
+  ansible.builtin.include_tasks:
+    file: ../../tasks/config/vhosts.yml
+  loop: "{{ rabbitmq_vhosts | dict2items }}"
+  loop_control:
+    loop_var: vhost_item
+  vars:
+    rabbitmq_vhosts:
+      test:
+        state: present
+
+- name: Update admin user with role task
+  ansible.builtin.include_tasks:
+    file: ../../tasks/config/users.yml
+  vars:
+    rabbitmq_users:
+      - user: admin
+        password: password
+        permissions:
+          - vhost: "/"
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
+          - vhost: "test"
+            configure_priv: .*
+            read_priv: .*
+            write_priv: .*
+        tags: administrator
+
+- name: Create queue with role task
+  ansible.builtin.include_tasks:
+    file: ../../tasks/config/queues.yml
+  loop: "{{ rabbitmq_queues | dict2items }}"
+  loop_control:
+    loop_var: queue_item
+  vars:
+    rabbitmq_queues:
+      queue1:
+        vhost: test
+        state: present
+        arguments:
+          x-queue-type: quorum
+      queue2:
+        vhost: test
+        state: present
+        arguments:
+          x-queue-type: quorum
+  
+- name: Get queue list
+  ansible.builtin.command: rabbitmqctl list_queues --vhost test
+  register: queues
   changed_when: false
 
-- name: Check if plugins are enabled
+- name: Check if queues exists
   ansible.builtin.assert:
     that:
-      - plugin.name in plugins.stdout_lines
-  loop: "{{ rabbitmq_plugins }}"
+      - '"queue1" in queues.stdout'
+      - '"queue2" in queues.stdout'
+
+- name: Create exchange with role task
+  ansible.builtin.include_tasks:
+    file: ../../tasks/config/exchanges.yml
+  loop: "{{ rabbitmq_exchanges | dict2items }}"
   loop_control:
-    loop_var: plugin
+    loop_var: exchange_item
+  vars:
+    rabbitmq_exchanges:
+      ex.test:
+        state: present
+        vhost: test
+        type: fanout  
+      ex.test2:
+        state: present
+        vhost: test
+        type: fanout
+
+- name: Get exchange list
+  ansible.builtin.command: rabbitmqctl list_exchanges --vhost test
+  register: exchanges
+  changed_when: false
+
+- name: Check if exchange exists
+  ansible.builtin.assert:
+    that:
+      - '"ex.test" in exchanges.stdout'
+
+- name: Create binding with role task
+  ansible.builtin.include_tasks:
+    file: ../../tasks/config/bindings.yml
+  loop: "{{ rabbitmq_bindings }}"
+  loop_control:
+    loop_var: binding_item
+  vars:
+    rabbitmq_bindings:
+      - name: ex.test
+        vhost: test
+        type: queue
+        destination: queue1
+        state: present
+      - name: ex.test
+        vhost: test
+        type: queue
+        destination: queue1
+        routing_key: route1
+        state: present
+
+- name: Get binding list
+  ansible.builtin.command: rabbitmqctl list_bindings --vhost test
+  register: bindings
+  changed_when: false
+
+- debug:
+    msg: "{{bindings}}"
+
+- name: Check if binding exists
+  ansible.builtin.assert:
+    that:
+      - '"ex.test" in bindings.stdout'
