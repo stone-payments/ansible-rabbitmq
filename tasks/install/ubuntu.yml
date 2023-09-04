@@ -10,12 +10,11 @@
     url: "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey"
     state: present
   when: not rabbitmq_os_package
-  
 
-- name: Add bintray rabbitmq repository
-  copy:
-    src: rabbitmq.list
-    dest: /etc/apt/sources.list.d/
+- name: Add the official rabbitmq repository
+  template:
+    src: rabbitmq.list.j2
+    dest: /etc/apt/sources.list.d/rabbitmq.list
     backup: true
   when: not rabbitmq_os_package
 

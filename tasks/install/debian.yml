@@ -6,9 +6,9 @@
   when: not rabbitmq_os_package
 
 - name: Add the official rabbitmq repository
-  copy:
-    src: rabbitmq.list
-    dest: /etc/apt/sources.list.d/
+  template:
+    src: rabbitmq.list.j2
+    dest: /etc/apt/sources.list.d/rabbitmq.list
     backup: true
   when: not rabbitmq_os_package
 
