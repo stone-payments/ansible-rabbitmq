@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+    name: ansible-rabbitmq
+    title: Ansible RabbitMQ Role
+    description: Ansible role to install and configure RabbitMQ server.
+    namespace: stone
+    tags:
+      - iac-library
+      - ansible
+    annotations:
+      legacy.stone.tech/owner-email: foundation.platform@stone.com.br
+spec:
+    type: library
+    lifecycle: production
+    owner: stone-payments/foundation-platform-solutions
