@@ -1,23 +1,29 @@
 ---
-- name: Add bintray rabbitmq repository's key
+- name: Add the official Erlang repository's key
   apt_key:
-    url: "https://bintray.com/user/downloadSubjectPublicKey?username=rabbitmq"
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf77f1eda57ebb1cc"
     state: present
   when: not rabbitmq_os_package
 
-- name: Add bintray rabbitmq repository
-  copy:
-    src: rabbitmq.bintray.list
-    dest: /etc/apt/sources.list.d/
+- name: Add the PackageCloud RabbitMQ repository's key
+  apt_key:
+    url: "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey"
+    state: present
+  when: not rabbitmq_os_package
+
+- name: Add the official rabbitmq repository
+  template:
+    src: rabbitmq.list.j2
+    dest: /etc/apt/sources.list.d/rabbitmq.list
     backup: true
   when: not rabbitmq_os_package
 
 - name: Install rabbitmq-server
   apt:
     name: rabbitmq-server={{ rabbitmq_package }}
-    update_cache: true
+    update_cache: yes
     state: present
-    force: true
+    force: yes
 
 - name: Update locale
   command: update-locale LC_ALL=en_US.UTF-8

@@ -1,0 +1,16 @@
+# Official repository of rabbitmq
+## https://www.rabbitmq.com/install-debian.html#apt-quick-start-packagecloud
+
+## Provides modern Erlang/OTP releases
+##
+## "{{ ansible_distribution_release }}" as distribution name should work for any reasonably recent Ubuntu or Debian release.
+## See the release to distribution mapping table in RabbitMQ doc guides to learn more.
+deb http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu {{ ansible_distribution_release|lower }} main
+deb-src http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu {{ ansible_distribution_release|lower }} main
+
+## Provides RabbitMQ
+##
+## "{{ ansible_distribution_release }}" as distribution name should work for any reasonably recent Ubuntu or Debian release.
+## See the release to distribution mapping table in RabbitMQ doc guides to learn more.
+deb https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ {{ ansible_distribution_release|lower }} main
+deb-src https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ {{ ansible_distribution_release|lower }} main
