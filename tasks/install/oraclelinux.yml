@@ -1,0 +1,70 @@
+---
+- name: Subscribe to puppet repository on satellite.
+  rhsm_repository:
+    name: "{{ item }}"
+    state: enabled
+  with_items: "{{ rabbitmq_repository_on_satellite }}"
+  when: rabbitmq_repository_on_satellite | length > 0
+
+- name: Task block to install RabbitMQ without satellite
+  block:
+    - name: Add package-cloud rabbitmq-erlang rpm key
+      rpm_key:
+        key: https://packagecloud.io/rabbitmq/erlang/gpgkey
+        state: present
+
+    - name: Add package-cloud rabbitmq-server rpm key
+      rpm_key:
+        key: https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey
+        state: present
+
+    - name: Add package-cloud rabbitmq-erlang repo
+      yum_repository:
+        name: rabbitmq_erlang
+        enabled: true
+        repo_gpgcheck: true
+        sslverify: true
+        gpgkey: https://packagecloud.io/rabbitmq/erlang/gpgkey
+        state: present
+        gpgcheck: false
+        metadata_expire: "300"
+        baseurl: https://packagecloud.io/rabbitmq/erlang/el/$releasever/$basearch
+        description: RabbitMQ-Erlang Repo
+
+    - name: Add package-cloud rabbitmq-server repo
+      yum_repository:
+        name: rabbitmq_rabbitmq-server
+        enabled: true
+        repo_gpgcheck: true
+        sslverify: true
+        gpgkey: https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey
+        state: present
+        gpgcheck: false
+        metadata_expire: "300"
+        baseurl: https://packagecloud.io/rabbitmq/rabbitmq-server/el/$releasever/$basearch
+        description: RabbitMQ-Server Repo
+  when: rabbitmq_repository_on_satellite | length == 0
+
+- name: Install rabbitmq-server dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python3-libselinux
+    - python3-libsemanage
+
+- name: Install rabbitmq-server {{ rabbitmq_version }}
+  yum:
+    name: "rabbitmq-server-{{ rabbitmq_package }}.el8.noarch"
+    state: present
+
+- name: Ensure rabbitmq server is started and enabled
+  service:
+    name: rabbitmq-server
+    state: started
+    enabled: true
+  register: rabbitmq_service
+
+- name: Ensure rabbitmq app is started so we can interact with rabbit
+  command: rabbitmqctl start_app
+  when: rabbitmq_service is changed
