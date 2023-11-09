@@ -56,7 +56,7 @@
 - name: Tasks to manage RabbitMQ Bindings
   ansible.builtin.include_tasks: config/bindings.yml
   when: rabbitmq_manage_bindings
-  with_items: "{{ rabbitmq_bindings | dict2items }}"
+  with_items: "{{ rabbitmq_bindings }}"
   loop_control:
     loop_var: binding_item
   tags: rabbitmq_bindings
