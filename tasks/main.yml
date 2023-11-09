@@ -30,7 +30,7 @@
   run_once: true
 
 - name: Tasks to manage RabbitMQ Users
-  ansible.builtin.include_tasks: config/users.yml
+  include_tasks: config/users.yml
   when: rabbitmq_manage_users
   tags: rabbitmq_users
   run_once: true

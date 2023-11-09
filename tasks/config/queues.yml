@@ -21,3 +21,5 @@
     message_ttl: "{{ queue_item.value.message_ttl | default(omit) }}"
     arguments: "{{ queue_item.value.arguments | default(omit) }}"
     state: "{{ queue_item.value.state | default(omit) }}"
+  delegate_to: localhost
+  become: false

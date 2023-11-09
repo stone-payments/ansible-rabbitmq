@@ -1,18 +1,11 @@
 ---
-- name: Get RabbitMQ installed plugins
-  ansible.builtin.command: rabbitmq-plugins list -e -m
-  changed_when: false
-  register: rabbitmq_installed_plugins
-
 - name: Enable plugins
-  community.rabbitmq.rabbitmq_plugin:
-    names: "{{ item.name }}"
-    state: "{{ item.state }}"
-  with_items: "{{ rabbitmq_plugins }}"
+  rabbitmq_plugin:
+    names: "{{ rabbitmq_plugins | join(',') }}"
+    state: enabled
+    new_only: no # ensure that plugins that are not on list will be disabled.
   when:
     - rabbitmq_plugins | length > 0
-    - rabbitmq_installed_plugins.stdout_lines is defined
-    - item.name not in rabbitmq_installed_plugins.stdout_lines
 
 - name: Force to correct enabled plugins permissions
   ansible.builtin.file:
