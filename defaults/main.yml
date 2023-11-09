@@ -32,7 +32,7 @@ rabbitmq_env_variables_file_path: /etc/rabbitmq/rabbitmq-env.conf
 rabbitmq_conf_extra_settings:
 rabbitmq_default_loglevel: warning
 rabbitmq_erlang_cookie: ""
-rabbitmq_erlang_cookie_file_path: "{{ rabbitmq_home_path }}.erlang.cookie"
+rabbitmq_erlang_cookie_file_path: "{{ rabbitmq_home_path }}/.erlang.cookie"
 
 
 # Variables can be overriden to adapt to the user case
