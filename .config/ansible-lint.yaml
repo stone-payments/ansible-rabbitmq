@@ -1,0 +1,12 @@
+---
+offline: true
+
+exclude_paths:
+  - molecule/
+  - catalog-info.yaml
+  - .github/workflows/
+
+skip_list:
+  - key-order
+
+profile: min
