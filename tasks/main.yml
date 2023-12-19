@@ -29,6 +29,12 @@
   tags: rabbitmq_vhosts
   run_once: true
 
+- name: Tasks to manage RabbitMQ Users
+  include_tasks: config/users.yml
+  when: rabbitmq_manage_users
+  tags: rabbitmq_users
+  run_once: true
+
 - name: Tasks to manage RabbitMQ Queues
   include_tasks: config/queues.yml
   when: rabbitmq_manage_queues
@@ -54,12 +60,6 @@
   loop_control:
     loop_var: binding_item
   tags: rabbitmq_bindings
-  run_once: true
-
-- name: Tasks to manage RabbitMQ Users
-  include_tasks: config/users.yml
-  when: rabbitmq_manage_users
-  tags: rabbitmq_users
   run_once: true
 
 - name: Tasks to manage RabbitMQ Policies
