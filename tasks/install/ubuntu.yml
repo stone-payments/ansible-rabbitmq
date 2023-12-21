@@ -1,35 +1,41 @@
 ---
-- name: Add bintray rabbitmq repository's key
+- name: Add the official rabbitmq repository's key
   apt_key:
-    url: "https://bintray.com/user/downloadSubjectPublicKey?username=rabbitmq"
+    url: "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.9F4587F226208342.key"
     state: present
   when: not rabbitmq_os_package
 
-- name: Add bintray rabbitmq repository
+- name: Add the official ereng repository's key
+  apt_key:
+    url: "https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.E495BB49CC4BBE5B.key"
+    state: present
+  when: not rabbitmq_os_package
+
+- name: Add the official rabbitmq repository
   copy:
-    src: rabbitmq.bintray.list
+    src: rabbitmq.list
     dest: /etc/apt/sources.list.d/
     backup: true
   when: not rabbitmq_os_package
 
 - name: Install rabbitmq-server
   apt:
-    name: rabbitmq-server={{ rabbitmq_package }}
-    update_cache: true
+    name: rabbitmq-server
+    update_cache: yes
     state: present
-    force: true
+    force: yes
 
 - name: Update locale
   command: update-locale LC_ALL=en_US.UTF-8
   changed_when: false
 
-- name: Ensure that rabbitmq server is started and enabled
+- name: Ensure rabbitmq server is started and enabled
   service:
     name: rabbitmq-server
     state: started
     enabled: true
   register: rabbitmq_service
 
-- name: Ensure that rabbitmq app is started so we can interact with rabbit
+- name: Ensure rabbitmq app is started so we can interact with rabbit
   command: rabbitmqctl start_app
   when: rabbitmq_service is changed
